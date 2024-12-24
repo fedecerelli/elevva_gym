@@ -1,1 +1,141 @@
+/* Variables Globales */
+:root {
+  /* Colores Primarios */
+  --color-primario-start: #ff6b6b; /* Rojo vibrante */
+  --color-primario-end: #f06543;  /* Naranja intenso */
+  
+  /* Colores Secundarios */
+  --color-secundario-start: #6c5ce7; /* Púrpura */
+  --color-secundario-end: #0984e3; /* Azul eléctrico */
+  
+  /* Colores Terciarios */
+  --color-terciario-start: #00cec9; /* Turquesa */
+  --color-terciario-end: #55efc4; /* Verde claro */
+  
+  /* Colores Neutros */
+  --color-blanco: #ffffff;
+  --color-gris-claro: #f5f5f5;
+  --color-gris-oscuro: #2d3436;
+
+  /* Tipografía */
+  --font-title: 2.5rem;
+  --font-subtitle: 1.5rem;
+  --font-base: 1rem;
+
+  /* Fondo */
+  --background: linear-gradient(135deg, #2d3436, #ff6b6b, #f06543);
+}
+
+/* Estilo Base */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  color: var(--color-blanco);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+}
+
+/* Header y Footer */
+header, footer {
+  background: linear-gradient(90deg, var(--color-primario-start), var(--color-primario-end));
+  color: var(--color-blanco);
+  text-align: center;
+  padding: 1rem 0;
+  border-radius: 1rem;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+header h1, footer h1 {
+  font-size: var(--font-title);
+  margin: 0;
+}
+
+/* Cards */
+.card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.card h4, .card h5 {
+  margin-top: 0;
+  color: var(--color-gris-oscuro);
+}
+
+/* Botones */
+.btn {
+  border-radius: 99px; /* Botones redondeados */
+  background: linear-gradient(90deg, var(--color-secundario-start), var(--color-secundario-end));
+  color: var(--color-blanco);
+  border: none;
+  border-radius: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  text-transform: uppercase;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.button-group .btn {
+  max-width: 180px;
+  margin: 10px !important; /* Fuerza un margen entre botones */
+}
+
+/* Campos de entrada */
+.input-field label {
+  color: var(--color-gris-oscuro);
+}
+
+.input-field input {
+  color: var(--color-gris-oscuro);
+}
+
+/* Calendario */
+#calendar {
+  background: var(--color-blanco);
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  font-size: 0.7rem;
+  color: black;
+}
+
+#selectedExercises {
+  color: black;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 10px 0; /* Evita superposición */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.wrapper {
+  max-width: 480px;
+  margin: auto;
+  padding: 20px;
+  margin-bottom: 20px; /* Garantiza espacio en la parte inferior */
+}
 
