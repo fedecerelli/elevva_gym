@@ -1,1 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elevva - Gimnasio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.css">
+  <style>
+    body {
+      background-color: #f4f9f4;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background-color: #388e3c;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+    header h1 {
+      font-size: 2rem;
+      margin: 0;
+    }
+    .card {
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    .card h4 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    .input-field input {
+      font-size: 1rem;
+    }
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .btn {
+      border-radius: 10px;
+      width: 100%;
+      max-width: 200px;
+    }
+    #calendar {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 10px;
+    }
+    footer {
+      background-color: #388e3c;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+    footer p {
+      font-size: 0.9rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Encabezado -->
+    <header>
+      <h1>ELEVVA GYM</h1>
+    </header>
+
+    <!-- Formulario -->
+    <div class="card">
+      <h4>Agregar o Editar Ejercicio</h4>
+      <form id="exerciseForm">
+        <input type="hidden" id="editIndex" value="-1">
+        <div class="input-field">
+          <input id="exerciseName" type="text" required>
+          <label for="exerciseName">Nombre del Ejercicio</label>
+        </div>
+        <div class="input-field">
+          <input id="sets" type="number" min="1" required>
+          <label for="sets">Series</label>
+        </div>
+        <div class="input-field">
+          <input id="reps" type="number" min="1" required>
+          <label for="reps">Repeticiones</label>
+        </div>
+        <div class="input-field">
+          <input id="weight" type="number" min="0" required>
+          <label for="weight">Peso (kg)</label>
+        </div>
+        <div class="input-field">
+          <input id="exerciseDate" type="date" required>
+          <label for="exerciseDate">Fecha</label>
+        </div>
+        <button class="btn waves-effect waves-light" type="submit">Guardar Ejercicio</button>
+      </form>
+    </div>
+
+    <!-- Calendario -->
+    <div class="card">
+      <h4>Calendario de Entrenamientos</h4>
+      <div id="calendar"></div>
+    </div>
+    
+      <!-- Ejercicios del Día -->
+    <div class="card hidden" id="exerciseList">
+      <h5>Ejercicios del Día</h5>
+      <div id="selectedExercises"></div>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="card">
+      <h4>Acciones</h4>
+      <div class="button-group">
+        <button class="btn waves-effect waves-light" id="downloadButton">Exportar como TXT</button>
+        <button class="btn waves-effect waves-light green" id="shareButton">WhatsApp</button>
+        <input type="file" id="uploadFile" accept=".txt" style="display: none;">
+        <button class="btn waves-effect waves-light blue" id="loadButton">Cargar Ejercicios</button>
+      </div>
+    </div>
+
+    <!-- Pie de Página -->
+    <footer>
+      <p>© 2024 Desarrollado por Plexcel</p>
+    </footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const exercises = JSON.parse(localStorage.getItem("exercises")) || [];
+      const form = document.getElementById("exerciseForm");
+      const calendarEl = document.getElementById("calendar");
+      const selectedExercises = document.getElementById("selectedExercises");
+      const editIndex = document.getElementById("editIndex");
+
+      const saveExercises = () => localStorage.setItem("exercises", JSON.stringify(exercises));
+
+      const updateCalendar = () => {
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: "dayGridMonth",
+          locale: "es",
+          events: exercises.map(e => ({ title: e.name, start: e.date })),
+          dateClick: (info) => showExercises(info.dateStr),
+        });
+        calendar.render();
+      };
+
+      const showExercises = (date) => {
+        selectedExercises.innerHTML = "";
+        const filtered = exercises.filter(e => e.date === date);
+
+        if (filtered.length === 0) {
+          selectedExercises.innerHTML = "<p>No hay ejercicios para este día</p>";
+          return;
+        }
+
+        filtered.forEach((exercise, index) => {
+          const div = document.createElement("div");
+          div.className = "exercise-card";
+          div.innerHTML = `
+            <p><strong>${exercise.name}</strong></p>
+            <p>Series: ${exercise.sets} | Reps: ${exercise.reps} | Peso: ${exercise.weight} kg</p>
+            <button class="btn-small blue" onclick="editExercise(${index})">Editar</button>
+            <button class="btn-small red" onclick="deleteExercise(${index})">Eliminar</button>
+          `;
+          selectedExercises.appendChild(div);
+        });
+      };
+
+      window.editExercise = (index) => {
+        const exercise = exercises[index];
+        form.exerciseName.value = exercise.name;
+        form.sets.value = exercise.sets;
+        form.reps.value = exercise.reps;
+        form.weight.value = exercise.weight;
+        form.exerciseDate.value = exercise.date;
+        editIndex.value = index;
+      };
+
+      window.deleteExercise = (index) => {
+        exercises.splice(index, 1);
+        saveExercises();
+        updateCalendar();
+      };
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const newExercise = {
+          name: form.exerciseName.value,
+          sets: form.sets.value,
+          reps: form.reps.value,
+          weight: form.weight.value,
+          date: form.exerciseDate.value,
+        };
+
+        const index = parseInt(editIndex.value);
+        if (index >= 0) {
+          exercises[index] = newExercise;
+        } else {
+          exercises.push(newExercise);
+        }
+
+        saveExercises();
+        updateCalendar();
+        form.reset();
+        editIndex.value = -1;
+      });
+
+      updateCalendar();
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const exercises = JSON.parse(localStorage.getItem("exercises")) || [];
+    const form = document.getElementById("exerciseForm");
+    const calendarEl = document.getElementById("calendar");
+    const selectedExercises = document.getElementById("selectedExercises");
+    const editIndex = document.getElementById("editIndex");
+    const exerciseList = document.getElementById("exerciseList");
+    const downloadButton = document.getElementById("downloadButton");
+    const shareButton = document.getElementById("shareButton");
+    const loadButton = document.getElementById("loadButton");
+    const uploadFile = document.getElementById("uploadFile");
+
+    const saveExercises = () => localStorage.setItem("exercises", JSON.stringify(exercises));
+
+    const updateCalendar = () => {
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: "dayGridMonth",
+        locale: "es",
+        events: exercises.map(e => ({ title: e.name, start: e.date })),
+        dateClick: (info) => showExercises(info.dateStr),
+      });
+      calendar.render();
+    };
+
+    const showExercises = (date) => {
+      selectedExercises.innerHTML = "";
+      const filtered = exercises.filter(e => e.date === date);
+
+      if (filtered.length === 0) {
+        selectedExercises.innerHTML = "<p>No hay ejercicios para este día</p>";
+        return;
+      }
+
+      filtered.forEach((exercise, index) => {
+        const div = document.createElement("div");
+        div.className = "exercise-card";
+        div.innerHTML = `
+          <p><strong>${exercise.name}</strong></p>
+          <p>Series: ${exercise.sets} | Reps: ${exercise.reps} | Peso: ${exercise.weight} kg</p>
+          <button class="btn-small blue" onclick="editExercise(${index})">Editar</button>
+          <button class="btn-small red" onclick="deleteExercise(${index})">Eliminar</button>
+        `;
+        selectedExercises.appendChild(div);
+      });
+    };
+
+    window.editExercise = (index) => {
+      const exercise = exercises[index];
+      form.exerciseName.value = exercise.name;
+      form.sets.value = exercise.sets;
+      form.reps.value = exercise.reps;
+      form.weight.value = exercise.weight;
+      form.exerciseDate.value = exercise.date;
+      editIndex.value = index;
+    };
+
+    window.deleteExercise = (index) => {
+      exercises.splice(index, 1);
+      saveExercises();
+      updateCalendar();
+    };
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const newExercise = {
+        name: form.exerciseName.value,
+        sets: form.sets.value,
+        reps: form.reps.value,
+        weight: form.weight.value,
+        date: form.exerciseDate.value,
+      };
+
+      const index = parseInt(editIndex.value);
+      if (index >= 0) {
+        exercises[index] = newExercise;
+      } else {
+        exercises.push(newExercise);
+      }
+
+      saveExercises();
+      updateCalendar();
+      form.reset();
+      editIndex.value = -1;
+    });
+
+    // Toggle mostrar/ocultar ejercicios del día
+    exerciseList.addEventListener("click", () => {
+      if (exerciseList.classList.contains("hidden")) {
+        exerciseList.classList.remove("hidden");
+        exerciseList.classList.add("show");
+      } else {
+        exerciseList.classList.remove("show");
+        exerciseList.classList.add("hidden");
+      }
+    });
+
+    // Exportar a TXT
+    downloadButton.addEventListener("click", () => {
+      const exercisesText = exercises.map(e => `${e.name} - ${e.sets} series x ${e.reps} repeticiones - ${e.weight} kg`).join("\n");
+      const blob = new Blob([exercisesText], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "ejercicios.txt";
+      link.click();
+    });
+
+// Compartir por WhatsApp con formato simple y efectivo
+shareButton.addEventListener("click", () => {
+  const exercisesText = exercises
+    .map(e => {
+      return `*${e.name}*\n${e.sets} series x ${e.reps} reps | ${e.weight}kg`;
+    })
+    .join("\n\n");
+
+  const header = "🏋🏻‍♂️ *Mi entrenamiento de hoy*\n\n";
+  const emoji = "";
+
+  const url = `https://wa.me/?text=${encodeURIComponent(header + emoji + exercisesText)}`;
+  window.open(url, "_blank");
+});
+
+    // Cargar ejercicios desde archivo
+    loadButton.addEventListener("click", () => {
+      uploadFile.click();
+    });
+
+    uploadFile.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file && file.type === "text/plain") {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const lines = reader.result.split("\n");
+          lines.forEach(line => {
+            const [name, setsRepsWeight] = line.split(" - ");
+            const [setsReps, weight] = setsRepsWeight.split(" x ");
+            const [sets, reps] = setsReps.split(" series");
+            exercises.push({
+              name,
+              sets: parseInt(sets.trim()),
+              reps: parseInt(reps.trim()),
+              weight: parseInt(weight.trim().replace("kg", "")),
+              date: new Date().toISOString().split("T")[0], // Asigna la fecha actual por defecto
+            });
+          });
+          saveExercises();
+          updateCalendar();
+        };
+        reader.readAsText(file);
+      } else {
+        alert("Por favor, selecciona un archivo .txt válido.");
+      }
+    });
+
+    updateCalendar();
+  });
+</script>
+</body>
+  
+</body>
+</html>
 
