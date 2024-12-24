@@ -142,7 +142,7 @@ header h1, footer h1 {
   list-style: none;
   padding: 0;
   color: white; /* Color del texto */
-  font-size: 8px; /* Tamaño del texto pequeño */
+  font-size: 10px; /* Tamaño del texto pequeño */
 }
 
 .exercise-list li {
@@ -154,6 +154,6 @@ header h1, footer h1 {
   justify-content: space-between;
   align-items: center;
   background-color: #fafafa;
-  font-size: 8px; /* Asegura que el texto dentro de los elementos li también sea más pequeño */
+  font-size: 10px; /* Asegura que el texto dentro de los elementos li también sea más pequeño */
 }
 
