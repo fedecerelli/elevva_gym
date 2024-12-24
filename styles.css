@@ -73,27 +73,23 @@ header h1, footer h1 {
 }
 
 /* Estilo para pantallas grandes (PC) */
-@media (min-width: 1024px) {
+.card {
+  flex: 1 1 calc(33.333% - 20px); /* 3 tarjetas por fila con espaciado */
+  max-width: calc(33.333% - 20px); /* Ancho máximo por tarjeta */
+  min-width: 300px; /* Tamaño mínimo para asegurar buena legibilidad */
+}
+
+@media (max-width: 768px) {
   .card {
-    max-width: 30%; /* Ocupa el 30% del ancho del contenedor */
-    margin: 20px; /* Espaciado uniforme */
+    flex: 1 1 calc(50% - 20px); /* 2 tarjetas por fila en tablets */
+    max-width: calc(50% - 20px);
   }
 }
 
-/* Estilo para tablets y pantallas medianas */
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (max-width: 480px) {
   .card {
-    max-width: 45%; /* Ocupa el 45% del ancho */
-    margin: 15px auto; /* Centrada con margen vertical */
-  }
-}
-
-/* Estilo para smartphones */
-@media (max-width: 767px) {
-  .card {
-    max-width: 90%; /* Ocupa el 90% del ancho */
-    padding: 15px; /* Reduce el padding para optimizar espacio */
-    margin: 10px auto; /* Espaciado lateral automático */
+    flex: 1 1 100%; /* Una tarjeta por fila en móviles */
+    max-width: 100%;
   }
 }
 
