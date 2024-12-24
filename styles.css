@@ -56,36 +56,44 @@ header h1, footer h1 {
   margin: 0;
 }
 
-/* Estilo Base para Tarjetas */
 .card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  margin-bottom: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 10px auto; /* Centra las tarjetas y agrega espacio vertical */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Adapta el ancho al contenedor */
+  max-width: 480px; /* En pantallas grandes, limita el tamaño */
   transition: transform 0.3s, box-shadow 0.3s;
-  width: 100%; /* Por defecto ocupa todo el ancho del contenedor */
-  max-width: 480px; /* Evita que sea más grande que este valor */
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Configuración Responsive */
-@media (max-width: 768px) {
+/* Estilo para pantallas grandes (PC) */
+@media (min-width: 1024px) {
   .card {
-    padding: 1rem; /* Reduce el padding en pantallas pequeñas */
-    max-width: 90%; /* Ocupa un 90% del ancho disponible */
+    max-width: 30%; /* Ocupa el 30% del ancho del contenedor */
+    margin: 20px; /* Espaciado uniforme */
   }
 }
 
-@media (max-width: 480px) {
+/* Estilo para tablets y pantallas medianas */
+@media (min-width: 768px) and (max-width: 1023px) {
   .card {
-    padding: 0.75rem; /* Ajusta aún más el padding para pantallas pequeñas */
-    max-width: 95%; /* Ocupa un 95% del ancho disponible */
+    max-width: 45%; /* Ocupa el 45% del ancho */
+    margin: 15px auto; /* Centrada con margen vertical */
+  }
+}
+
+/* Estilo para smartphones */
+@media (max-width: 767px) {
+  .card {
+    max-width: 90%; /* Ocupa el 90% del ancho */
+    padding: 15px; /* Reduce el padding para optimizar espacio */
+    margin: 10px auto; /* Espaciado lateral automático */
   }
 }
 
