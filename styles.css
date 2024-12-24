@@ -138,4 +138,22 @@ header h1, footer h1 {
   padding: 20px;
   margin-bottom: 20px; /* Garantiza espacio en la parte inferior */
 }
+.exercise-list {
+  list-style: none;
+  padding: 0;
+  color: white; /* Color del texto */
+  font-size: 8px; /* Tamaño del texto pequeño */
+}
+
+.exercise-list li {
+  padding: 10px;
+  margin-bottom: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fafafa;
+  font-size: 8px; /* Asegura que el texto dentro de los elementos li también sea más pequeño */
+}
 
